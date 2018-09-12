@@ -116,15 +116,16 @@ export class CalculatorComponent {
     var options = {   // options for CSV export package
       headers: ["Transaction Number", "Change Due"]
     }
+    let alertStatus = false;
     let stringAnswers = [];    // init our array of final, human readable answers
     let transactionCounter = 0;    // matches each transaction with the appropriate answer line
-    let csvContent = "data:text/csv;charset=utf-8,";
     for (var i = 0; i < resultArray.length; i++) {    // each iteration is one transaction
       transactionCounter ++;
       let transactionString = "";
       for (var x = 0; x < resultArray[i].length; x++) {   // each iteration is one denomination of a transaction
         if (resultArray[i][x].name == "insufficent funds" || resultArray[i][x].name == "no change due") {
           var string: any = resultArray[i][x].name;
+          alertStatus = true;
         } else {
           var string: any = resultArray[i][x].amount + " " + resultArray[i][x].name;
         }
@@ -135,7 +136,9 @@ export class CalculatorComponent {
       fileInputField.value = "";
     }
     new Angular5Csv(stringAnswers, 'Results', options);   // third party package to generate the output CSV
-    alert("One or more of your transactions were invalid. Check the results file for details.")
+    if (alertStatus == true) {
+      alert("One or more of your transactions were invalid. Check the results file for details.");
+    }
   }
 
 }
